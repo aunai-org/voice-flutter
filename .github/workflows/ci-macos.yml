@@ -1,0 +1,23 @@
+name: macOS
+# Not run per PR (runner cost); main, tags and nightly only.
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  schedule:
+    - cron: '17 21 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: test (macos-latest)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+      - name: Rust tests
+        working-directory: rust
+        run: cargo test

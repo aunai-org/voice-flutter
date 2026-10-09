@@ -1,0 +1,43 @@
+name: Linux
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ['v*']
+  schedule:
+    - cron: '17 21 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: test (ubuntu-latest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: cargo install flutter_rust_bridge_codegen --version 2.13.0 --locked
+      - name: Rust fmt, clippy, test
+        working-directory: rust
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy --all-targets -- -D warnings
+          cargo test
+      - run: flutter pub get
+      - name: Generated bindings are up to date
+        run: |
+          flutter_rust_bridge_codegen generate
+          git diff --exit-code -- lib rust/src
+      - run: flutter analyze
+      - name: Dart tests (call the native library)
+        run: |
+          cargo build --manifest-path rust/Cargo.toml
+          flutter test

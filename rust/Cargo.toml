@@ -1,0 +1,16 @@
+[package]
+name = "voice_flutter"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "staticlib", "lib"]
+
+[dependencies]
+flutter_rust_bridge = "=2.13.0"
+# Pinned to a commit on voice-core main until 0.1.0 is on crates.io.
+voice-core = { git = "https://github.com/aunai-org/voice-core", rev = "51729687f4849a4c06f2eced4ade1f6818077181" }
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

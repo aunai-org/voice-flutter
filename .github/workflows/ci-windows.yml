@@ -1,0 +1,32 @@
+name: Windows
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ['v*']
+  schedule:
+    - cron: '17 21 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: test (windows-latest)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Rust tests
+        working-directory: rust
+        run: cargo test
+      - name: Build the example app for Windows
+        working-directory: example
+        run: |
+          flutter pub get
+          flutter build windows --debug
