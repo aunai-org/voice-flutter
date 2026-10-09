@@ -11,8 +11,8 @@ Status: pre-alpha. Planning docs: [docs/spec.md](docs/spec.md), [docs/plan.md](d
 | `VoiceAnalyzer.analyzeSamples(Float32List, sampleRate:)` returning `VoiceReport` (duration, level, LUFS, median f0, voiced fraction, syllables and pace, pauses, warnings) | works; tested from Dart against the native library on Linux |
 | `VoiceAnalyzer.pcm16ToFloat32` (16-bit PCM bytes from `record` to floats) | works |
 | Typed errors (`VoiceAnalysisException`) | works |
-| Example app showing a report | written, `flutter analyze` clean; not yet run on a device |
-| Windows desktop and Android builds | CI jobs written, not yet seen green |
+| Example app showing a report | builds for Windows and Android in CI; not yet run on a device |
+| Windows desktop (example app) and Android (debug APK) builds | green in CI |
 | Frame stream (level, speech/silence), `analyzeFile`, window stats | planned (needs voice-core streaming `Analyzer`) |
 | iOS, web | later |
 
