@@ -8,8 +8,7 @@ import 'package:voice_flutter/voice_flutter.dart';
 const _lib = 'rust/target/debug/libvoice_flutter.so';
 
 Float32List _sine(double hz, double secs, int sr) => Float32List.fromList([
-  for (var i = 0; i < (secs * sr).round(); i++)
-    0.3 * sin(2 * pi * hz * i / sr),
+  for (var i = 0; i < (secs * sr).round(); i++) 0.3 * sin(2 * pi * hz * i / sr),
 ]);
 
 void main() {
@@ -48,5 +47,27 @@ void main() {
     expect(f[0], -1.0);
     expect(f[1], closeTo(0.99997, 1e-4));
     expect(f[2], 0.0);
+  });
+
+  test('a live stream gives pitch and speech frames chunk by chunk', () async {
+    final stream = VoiceAnalyzer.startStream(sampleRate: 16000);
+    final samples = _sine(200, 2, 16000);
+    final frames = <FrameInfo>[];
+    for (var i = 0; i < samples.length; i += 1600) {
+      frames.addAll(await stream.push(samples: samples.sublist(i, i + 1600)));
+    }
+    frames.addAll(await stream.finish());
+    expect(frames.length, greaterThan(195));
+    final mid = frames[100];
+    expect(mid.speech, isTrue);
+    expect(mid.f0Hz, closeTo(200, 3));
+    expect(await stream.push(samples: Float32List(1600)), isEmpty);
+  });
+
+  test('a stream with a zero sample rate throws', () {
+    expect(
+      () => VoiceAnalyzer.startStream(sampleRate: 0),
+      throwsA(isA<VoiceAnalysisException>()),
+    );
   });
 }

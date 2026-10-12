@@ -8,11 +8,15 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart'
     show ExternalLibrary;
 
 import 'src/rust/api/analysis.dart' as bridge;
+import 'src/rust/api/stream.dart' as live;
 import 'src/rust/frb_generated.dart';
 
 export 'src/rust/api/analysis.dart' show VoiceReport, VoiceWarning;
+export 'src/rust/api/stream.dart' show FrameInfo, StreamAnalyzer;
+
 export 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart'
     show ExternalLibrary;
+
 export 'src/rust/frb_generated.dart' show RustLib;
 
 /// Thrown when voice-core rejects an input (empty samples, invalid rate).
@@ -42,6 +46,27 @@ class VoiceAnalyzer {
       return await bridge.analyzeSamples(
         samples: samples,
         sampleRate: sampleRate,
+      );
+    } on String catch (message) {
+      throw VoiceAnalysisException(message);
+    }
+  }
+
+  /// Starts a live analysis of audio that arrives in chunks. Call `push` with
+  /// each chunk (mono floats in -1..1) to get one `FrameInfo` per 10 ms (level,
+  /// speech or silence, pitch, syllable nuclei, a 3 s pace), about 0.17 s behind
+  /// the audio, and `finish` at the end for the last frames.
+  ///
+  /// [referenceLevelDbfs] is the loudest level of an earlier recording, if
+  /// known, so the first words are judged against a realistic speech level.
+  static live.StreamAnalyzer startStream({
+    required int sampleRate,
+    double? referenceLevelDbfs,
+  }) {
+    try {
+      return live.StreamAnalyzer(
+        sampleRate: sampleRate,
+        referenceLevelDbfs: referenceLevelDbfs,
       );
     } on String catch (message) {
       throw VoiceAnalysisException(message);
