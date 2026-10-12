@@ -13,7 +13,8 @@ Status: pre-alpha. Planning docs: [docs/spec.md](docs/spec.md), [docs/plan.md](d
 | Typed errors (`VoiceAnalysisException`) | works |
 | Example app showing a report | builds for Windows and Android in CI; not yet run on a device |
 | Windows desktop (example app) and Android (debug APK) builds | green in CI |
-| Frame stream (level, speech/silence), `analyzeFile`, window stats | planned (needs voice-core streaming `Analyzer`) |
+| `VoiceAnalyzer.startStream(sampleRate:)` returning a `StreamAnalyzer`: `push` audio chunks, get one `FrameInfo` per 10 ms (level, speech/silence, pitch, syllable nucleus, 3 s pace), about 0.17 s behind the audio; `finish` for the last frames | works; tested from Dart on Linux |
+| `analyzeFile`, window stats | planned |
 | iOS, web | later |
 
 Numbers come from voice-core `analyze` on its main branch (pinned by commit in `rust/Cargo.toml` until voice-core is on crates.io); see that repo for accuracy against Praat.
@@ -24,6 +25,11 @@ Numbers come from voice-core `analyze` on its main branch (pinned by commit in `
 await VoiceAnalyzer.init();                       // once, in main()
 final report = await VoiceAnalyzer.analyzeSamples(samples, sampleRate: 16000);
 print(report.f0MedianHz);
+
+// Live: push chunks as the microphone delivers them.
+final live = VoiceAnalyzer.startStream(sampleRate: 16000);
+final frames = await live.push(samples: chunk);   // List<FrameInfo>
+final rest = await live.finish();
 ```
 
 ## Develop
