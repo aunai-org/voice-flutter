@@ -145,6 +145,20 @@ void main() {
     expect(w[0].meanF0Hz, closeTo(200, 3));
   });
 
+  test(
+    'emphasis returns one entry per word and no range for a short take',
+    () async {
+      final r = await VoiceAnalyzer.emphasis(
+        _sine(200, 1, 16000),
+        sampleRate: 16000,
+        words: [(0.1, 0.5), (0.5, 0.9)],
+      );
+      expect(r.words.map((e) => e.startS), [0.1, 0.5]);
+      expect(r.words[0].pauseAfterS, 0);
+      expect(r.typical.levelDb, isNull);
+    },
+  );
+
   test('a silent gap is a pause hesitation', () async {
     final tone = _sine(200, 1, 16000);
     final h = await VoiceAnalyzer.hesitations(

@@ -71,7 +71,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 870436238;
+  int get rustContentHash => -1531873598;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -100,6 +100,12 @@ abstract class RustLibApi extends BaseApi {
   Future<VoiceReport> crateApiAnalysisAnalyzeSamples({
     required List<double> samples,
     required int sampleRate,
+  });
+
+  Future<EmphasisReport> crateApiMeasuresEmphasis({
+    required List<double> samples,
+    required int sampleRate,
+    required List<(double, double)> words,
   });
 
   Future<List<Hesitation>> crateApiMeasuresHesitations({
@@ -286,6 +292,42 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<EmphasisReport> crateApiMeasuresEmphasis({
+    required List<double> samples,
+    required int sampleRate,
+    required List<(double, double)> words,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_32_loose(samples, serializer);
+          sse_encode_u_32(sampleRate, serializer);
+          sse_encode_list_record_f_64_f_64(words, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 5,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_emphasis_report,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiMeasuresEmphasisConstMeta,
+        argValues: [samples, sampleRate, words],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiMeasuresEmphasisConstMeta => const TaskConstMeta(
+    debugName: "emphasis",
+    argNames: ["samples", "sampleRate", "words"],
+  );
+
+  @override
   Future<List<Hesitation>> crateApiMeasuresHesitations({
     required List<double> samples,
     required int sampleRate,
@@ -299,7 +341,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 6,
             port: port_,
           );
         },
@@ -329,7 +371,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 7,
             port: port_,
           );
         },
@@ -365,7 +407,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 8,
             port: port_,
           );
         },
@@ -400,7 +442,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 9,
             port: port_,
           );
         },
@@ -437,7 +479,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 10,
             port: port_,
           );
         },
@@ -506,6 +548,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  EmphasisBand dco_decode_box_autoadd_emphasis_band(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_emphasis_band(raw);
+  }
+
+  @protected
   double dco_decode_box_autoadd_f_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as double;
@@ -515,6 +563,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Phonation dco_decode_box_autoadd_phonation(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_phonation(raw);
+  }
+
+  @protected
+  EmphasisBand dco_decode_emphasis_band(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return EmphasisBand(
+      low: dco_decode_f_32(arr[0]),
+      median: dco_decode_f_32(arr[1]),
+      high: dco_decode_f_32(arr[2]),
+    );
+  }
+
+  @protected
+  EmphasisReport dco_decode_emphasis_report(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return EmphasisReport(
+      typical: dco_decode_typical_range(arr[0]),
+      words: dco_decode_list_word_emphasis(arr[1]),
+    );
   }
 
   @protected
@@ -640,6 +713,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<WordEmphasis> dco_decode_list_word_emphasis(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_word_emphasis).toList();
+  }
+
+  @protected
+  EmphasisBand? dco_decode_opt_box_autoadd_emphasis_band(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_emphasis_band(raw);
+  }
+
+  @protected
   double? dco_decode_opt_box_autoadd_f_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_f_32(raw);
@@ -674,6 +759,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       throw Exception('Expected 2 elements, got ${arr.length}');
     }
     return (dco_decode_f_64(arr[0]), dco_decode_f_64(arr[1]));
+  }
+
+  @protected
+  TypicalRange dco_decode_typical_range(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return TypicalRange(
+      windows: dco_decode_u_32(arr[0]),
+      levelDb: dco_decode_opt_box_autoadd_emphasis_band(arr[1]),
+      pitchSemitones: dco_decode_opt_box_autoadd_emphasis_band(arr[2]),
+    );
   }
 
   @protected
@@ -750,6 +848,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  WordEmphasis dco_decode_word_emphasis(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return WordEmphasis(
+      startS: dco_decode_f_64(arr[0]),
+      endS: dco_decode_f_64(arr[1]),
+      relativeLevelDb: dco_decode_opt_box_autoadd_f_32(arr[2]),
+      relativePitchSemitones: dco_decode_opt_box_autoadd_f_32(arr[3]),
+      pauseBeforeS: dco_decode_f_32(arr[4]),
+      pauseAfterS: dco_decode_f_32(arr[5]),
+    );
+  }
+
+  @protected
   StreamAnalyzer
   sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStreamAnalyzer(
     SseDeserializer deserializer,
@@ -799,6 +913,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  EmphasisBand sse_decode_box_autoadd_emphasis_band(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_emphasis_band(deserializer));
+  }
+
+  @protected
   double sse_decode_box_autoadd_f_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_f_32(deserializer));
@@ -808,6 +930,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Phonation sse_decode_box_autoadd_phonation(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_phonation(deserializer));
+  }
+
+  @protected
+  EmphasisBand sse_decode_emphasis_band(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_low = sse_decode_f_32(deserializer);
+    var var_median = sse_decode_f_32(deserializer);
+    var var_high = sse_decode_f_32(deserializer);
+    return EmphasisBand(low: var_low, median: var_median, high: var_high);
+  }
+
+  @protected
+  EmphasisReport sse_decode_emphasis_report(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_typical = sse_decode_typical_range(deserializer);
+    var var_words = sse_decode_list_word_emphasis(deserializer);
+    return EmphasisReport(typical: var_typical, words: var_words);
   }
 
   @protected
@@ -978,6 +1117,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<WordEmphasis> sse_decode_list_word_emphasis(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <WordEmphasis>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_word_emphasis(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  EmphasisBand? sse_decode_opt_box_autoadd_emphasis_band(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_emphasis_band(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   double? sse_decode_opt_box_autoadd_f_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -1024,6 +1190,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_field0 = sse_decode_f_64(deserializer);
     var var_field1 = sse_decode_f_64(deserializer);
     return (var_field0, var_field1);
+  }
+
+  @protected
+  TypicalRange sse_decode_typical_range(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_windows = sse_decode_u_32(deserializer);
+    var var_levelDb = sse_decode_opt_box_autoadd_emphasis_band(deserializer);
+    var var_pitchSemitones = sse_decode_opt_box_autoadd_emphasis_band(
+      deserializer,
+    );
+    return TypicalRange(
+      windows: var_windows,
+      levelDb: var_levelDb,
+      pitchSemitones: var_pitchSemitones,
+    );
   }
 
   @protected
@@ -1119,6 +1300,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  WordEmphasis sse_decode_word_emphasis(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_startS = sse_decode_f_64(deserializer);
+    var var_endS = sse_decode_f_64(deserializer);
+    var var_relativeLevelDb = sse_decode_opt_box_autoadd_f_32(deserializer);
+    var var_relativePitchSemitones = sse_decode_opt_box_autoadd_f_32(
+      deserializer,
+    );
+    var var_pauseBeforeS = sse_decode_f_32(deserializer);
+    var var_pauseAfterS = sse_decode_f_32(deserializer);
+    return WordEmphasis(
+      startS: var_startS,
+      endS: var_endS,
+      relativeLevelDb: var_relativeLevelDb,
+      relativePitchSemitones: var_relativePitchSemitones,
+      pauseBeforeS: var_pauseBeforeS,
+      pauseAfterS: var_pauseAfterS,
+    );
+  }
+
+  @protected
   void
   sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerStreamAnalyzer(
     StreamAnalyzer self,
@@ -1170,6 +1372,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_emphasis_band(
+    EmphasisBand self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_emphasis_band(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_f_32(double self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_f_32(self, serializer);
@@ -1182,6 +1393,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_phonation(self, serializer);
+  }
+
+  @protected
+  void sse_encode_emphasis_band(EmphasisBand self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_32(self.low, serializer);
+    sse_encode_f_32(self.median, serializer);
+    sse_encode_f_32(self.high, serializer);
+  }
+
+  @protected
+  void sse_encode_emphasis_report(
+    EmphasisReport self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_typical_range(self.typical, serializer);
+    sse_encode_list_word_emphasis(self.words, serializer);
   }
 
   @protected
@@ -1345,6 +1574,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_word_emphasis(
+    List<WordEmphasis> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_word_emphasis(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_emphasis_band(
+    EmphasisBand? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_emphasis_band(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_f_32(double? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -1385,6 +1639,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_f_64(self.$1, serializer);
     sse_encode_f_64(self.$2, serializer);
+  }
+
+  @protected
+  void sse_encode_typical_range(TypicalRange self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_32(self.windows, serializer);
+    sse_encode_opt_box_autoadd_emphasis_band(self.levelDb, serializer);
+    sse_encode_opt_box_autoadd_emphasis_band(self.pitchSemitones, serializer);
   }
 
   @protected
@@ -1447,6 +1709,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_f_32(self.meanF0Hz, serializer);
     sse_encode_opt_box_autoadd_f_32(self.f0RangeSemitones, serializer);
     sse_encode_opt_box_autoadd_f_32(self.relativePitchSemitones, serializer);
+  }
+
+  @protected
+  void sse_encode_word_emphasis(WordEmphasis self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.startS, serializer);
+    sse_encode_f_64(self.endS, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.relativeLevelDb, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.relativePitchSemitones, serializer);
+    sse_encode_f_32(self.pauseBeforeS, serializer);
+    sse_encode_f_32(self.pauseAfterS, serializer);
   }
 }
 

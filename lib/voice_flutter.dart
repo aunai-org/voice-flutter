@@ -14,7 +14,16 @@ import 'src/rust/frb_generated.dart';
 
 export 'src/rust/api/analysis.dart' show VoiceReport, VoiceWarning;
 export 'src/rust/api/measures.dart'
-    show Hesitation, HesitationKind, LadderStep, Phonation, WindowStats;
+    show
+        EmphasisBand,
+        EmphasisReport,
+        Hesitation,
+        HesitationKind,
+        LadderStep,
+        Phonation,
+        TypicalRange,
+        WindowStats,
+        WordEmphasis;
 export 'src/rust/api/stream.dart' show FrameInfo, StreamAnalyzer;
 
 export 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart'
@@ -94,6 +103,24 @@ class VoiceAnalyzer {
       samples: samples,
       sampleRate: sampleRate,
       windows: windows,
+    ),
+  );
+
+  /// How much each of the [words], given as `(start, end)` in seconds, stood
+  /// out in level and pitch against the rest of the recording, and whether a
+  /// pause sat next to it, with the recording's typical range. Descriptive
+  /// only: it says how far a word sat from the rest of the take, not whether a
+  /// listener heard emphasis. Pitch disagrees with Praat by an octave on about
+  /// 1 window in 8.
+  static Future<measures.EmphasisReport> emphasis(
+    Float32List samples, {
+    required int sampleRate,
+    required List<(double, double)> words,
+  }) => _guard(
+    () => measures.emphasis(
+      samples: samples,
+      sampleRate: sampleRate,
+      words: words,
     ),
   );
 

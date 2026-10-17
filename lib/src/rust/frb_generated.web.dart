@@ -54,10 +54,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  EmphasisBand dco_decode_box_autoadd_emphasis_band(dynamic raw);
+
+  @protected
   double dco_decode_box_autoadd_f_32(dynamic raw);
 
   @protected
   Phonation dco_decode_box_autoadd_phonation(dynamic raw);
+
+  @protected
+  EmphasisBand dco_decode_emphasis_band(dynamic raw);
+
+  @protected
+  EmphasisReport dco_decode_emphasis_report(dynamic raw);
 
   @protected
   double dco_decode_f_32(dynamic raw);
@@ -108,6 +117,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<WindowStats> dco_decode_list_window_stats(dynamic raw);
 
   @protected
+  List<WordEmphasis> dco_decode_list_word_emphasis(dynamic raw);
+
+  @protected
+  EmphasisBand? dco_decode_opt_box_autoadd_emphasis_band(dynamic raw);
+
+  @protected
   double? dco_decode_opt_box_autoadd_f_32(dynamic raw);
 
   @protected
@@ -118,6 +133,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   (double, double) dco_decode_record_f_64_f_64(dynamic raw);
+
+  @protected
+  TypicalRange dco_decode_typical_range(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -139,6 +157,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   WindowStats dco_decode_window_stats(dynamic raw);
+
+  @protected
+  WordEmphasis dco_decode_word_emphasis(dynamic raw);
 
   @protected
   StreamAnalyzer
@@ -165,10 +186,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  EmphasisBand sse_decode_box_autoadd_emphasis_band(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   double sse_decode_box_autoadd_f_32(SseDeserializer deserializer);
 
   @protected
   Phonation sse_decode_box_autoadd_phonation(SseDeserializer deserializer);
+
+  @protected
+  EmphasisBand sse_decode_emphasis_band(SseDeserializer deserializer);
+
+  @protected
+  EmphasisReport sse_decode_emphasis_report(SseDeserializer deserializer);
 
   @protected
   double sse_decode_f_32(SseDeserializer deserializer);
@@ -223,6 +255,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<WindowStats> sse_decode_list_window_stats(SseDeserializer deserializer);
 
   @protected
+  List<WordEmphasis> sse_decode_list_word_emphasis(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  EmphasisBand? sse_decode_opt_box_autoadd_emphasis_band(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   double? sse_decode_opt_box_autoadd_f_32(SseDeserializer deserializer);
 
   @protected
@@ -233,6 +275,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   (double, double) sse_decode_record_f_64_f_64(SseDeserializer deserializer);
+
+  @protected
+  TypicalRange sse_decode_typical_range(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -254,6 +299,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   WindowStats sse_decode_window_stats(SseDeserializer deserializer);
+
+  @protected
+  WordEmphasis sse_decode_word_emphasis(SseDeserializer deserializer);
 
   @protected
   void
@@ -283,11 +331,26 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_emphasis_band(
+    EmphasisBand self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_box_autoadd_f_32(double self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_phonation(
     Phonation self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_emphasis_band(EmphasisBand self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_emphasis_report(
+    EmphasisReport self,
     SseSerializer serializer,
   );
 
@@ -370,6 +433,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_word_emphasis(
+    List<WordEmphasis> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_emphasis_band(
+    EmphasisBand? self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_opt_box_autoadd_f_32(double? self, SseSerializer serializer);
 
   @protected
@@ -386,6 +461,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     (double, double) self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_typical_range(TypicalRange self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
@@ -407,6 +485,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_window_stats(WindowStats self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_word_emphasis(WordEmphasis self, SseSerializer serializer);
 }
 
 // Section: wire_class
