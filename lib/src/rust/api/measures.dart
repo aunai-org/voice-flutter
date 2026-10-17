@@ -7,7 +7,8 @@ import '../frb_generated.dart';
 
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
+// These functions are ignored because they are not marked as `pub`: `band`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
 
 /// Longest voiced stretch of mono `samples`, or null when no stretch has at
 /// least 10 voiced frames.
@@ -45,6 +46,19 @@ Future<List<WindowStats>> windowStats({
   windows: windows,
 );
 
+/// How much each of the `words` (given as `(start_s, end_s)`) stood out in
+/// level and pitch against the rest of the recording, and whether a pause sat
+/// next to it.
+Future<EmphasisReport> emphasis({
+  required List<double> samples,
+  required int sampleRate,
+  required List<(double, double)> words,
+}) => RustLib.instance.api.crateApiMeasuresEmphasis(
+  samples: samples,
+  sampleRate: sampleRate,
+  words: words,
+);
+
 /// Hesitations of mono `samples` in time order, with voice-core's default
 /// thresholds (0.5 s pause, 0.4 s held sound, 1 semitone, 8 dB). Pauses match
 /// Praat; held sounds are only checked on fluent speech so far.
@@ -55,6 +69,54 @@ Future<List<Hesitation>> hesitations({
   samples: samples,
   sampleRate: sampleRate,
 );
+
+/// The middle half of a value over a recording's ordinary speech (mirror of
+/// `voice_core::emphasis::Band`).
+class EmphasisBand {
+  /// 25th percentile.
+  final double low;
+  final double median;
+
+  /// 75th percentile.
+  final double high;
+
+  const EmphasisBand({
+    required this.low,
+    required this.median,
+    required this.high,
+  });
+
+  @override
+  int get hashCode => low.hashCode ^ median.hashCode ^ high.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EmphasisBand &&
+          runtimeType == other.runtimeType &&
+          low == other.low &&
+          median == other.median &&
+          high == other.high;
+}
+
+/// Emphasis of the given words and the typical range they are judged against.
+class EmphasisReport {
+  final TypicalRange typical;
+  final List<WordEmphasis> words;
+
+  const EmphasisReport({required this.typical, required this.words});
+
+  @override
+  int get hashCode => typical.hashCode ^ words.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EmphasisReport &&
+          runtimeType == other.runtimeType &&
+          typical == other.typical &&
+          words == other.words;
+}
 
 /// One hesitation, in seconds from the start of the recording.
 class Hesitation {
@@ -177,6 +239,38 @@ class Phonation {
           rmsDbfs == other.rmsDbfs;
 }
 
+/// The typical range of a recording's ordinary speech (mirror of
+/// `voice_core::emphasis::Typical`).
+class TypicalRange {
+  /// Number of 0.4 s windows inside speech segments that were measured.
+  final int windows;
+
+  /// Level relative to the speech level in dB; `None` with under 5 windows.
+  final EmphasisBand? levelDb;
+
+  /// Mean f0 relative to the median f0 in semitones; `None` with under 5 windows.
+  final EmphasisBand? pitchSemitones;
+
+  const TypicalRange({
+    required this.windows,
+    this.levelDb,
+    this.pitchSemitones,
+  });
+
+  @override
+  int get hashCode =>
+      windows.hashCode ^ levelDb.hashCode ^ pitchSemitones.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TypicalRange &&
+          runtimeType == other.runtimeType &&
+          windows == other.windows &&
+          levelDb == other.levelDb &&
+          pitchSemitones == other.pitchSemitones;
+}
+
 /// Statistics of one window (mirror of `voice_core::window_stats::WindowStats`).
 class WindowStats {
   final double startS;
@@ -229,4 +323,48 @@ class WindowStats {
           meanF0Hz == other.meanF0Hz &&
           f0RangeSemitones == other.f0RangeSemitones &&
           relativePitchSemitones == other.relativePitchSemitones;
+}
+
+/// How one word stood out (mirror of `voice_core::emphasis::WordEmphasis`).
+class WordEmphasis {
+  final double startS;
+  final double endS;
+  final double? relativeLevelDb;
+  final double? relativePitchSemitones;
+
+  /// Silent gap ending within 0.2 s of the word's start, 0 when none.
+  final double pauseBeforeS;
+
+  /// Silent gap starting within 0.2 s of the word's end, 0 when none.
+  final double pauseAfterS;
+
+  const WordEmphasis({
+    required this.startS,
+    required this.endS,
+    this.relativeLevelDb,
+    this.relativePitchSemitones,
+    required this.pauseBeforeS,
+    required this.pauseAfterS,
+  });
+
+  @override
+  int get hashCode =>
+      startS.hashCode ^
+      endS.hashCode ^
+      relativeLevelDb.hashCode ^
+      relativePitchSemitones.hashCode ^
+      pauseBeforeS.hashCode ^
+      pauseAfterS.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WordEmphasis &&
+          runtimeType == other.runtimeType &&
+          startS == other.startS &&
+          endS == other.endS &&
+          relativeLevelDb == other.relativeLevelDb &&
+          relativePitchSemitones == other.relativePitchSemitones &&
+          pauseBeforeS == other.pauseBeforeS &&
+          pauseAfterS == other.pauseAfterS;
 }

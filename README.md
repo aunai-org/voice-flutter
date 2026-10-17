@@ -14,7 +14,7 @@ Status: pre-alpha. Planning docs: [docs/spec.md](docs/spec.md), [docs/plan.md](d
 | Example app showing a report | builds for Windows and Android in CI; not yet run on a device |
 | Windows desktop (example app) and Android (debug APK) builds | green in CI |
 | `VoiceAnalyzer.startStream(sampleRate:)` returning a `StreamAnalyzer`: `push` audio chunks, get one `FrameInfo` per 10 ms (level, speech/silence, pitch, syllable nucleus, 3 s pace), about 0.17 s behind the audio; `finish` for the last frames | works; tested from Dart on Linux |
-| `VoiceAnalyzer.maxPhonation`, `levelLadder`, `windowStats`, `hesitations` (maximum phonation time, level per step window, level and pitch per window such as word timestamps, pauses and held sounds) | works; tested from Dart on Linux; numbers checked against Praat in voice-core. Window pitch is off by an octave on about 1 window in 8; held sounds are only checked on fluent speech, so do not show them as fact |
+| `VoiceAnalyzer.maxPhonation`, `levelLadder`, `windowStats`, `emphasis`, `hesitations` (maximum phonation time, level per step window, level and pitch per window such as word timestamps, how far given words stood out from the rest of the take with a typical range, pauses and held sounds) | works; tested from Dart on Linux; numbers checked against Praat in voice-core. Window pitch is off by an octave on about 1 window in 8; held sounds are only checked on fluent speech, so do not show them as fact |
 | `analyzeFile` | planned |
 | Web: the Rust library builds to WebAssembly; the web build was checked in Chromium (live pace and a full analysis in an app) | works by hand; see Web below; not in CI |
 | iOS | later |

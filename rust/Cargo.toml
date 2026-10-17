@@ -10,7 +10,7 @@ crate-type = ["cdylib", "staticlib", "lib"]
 [dependencies]
 flutter_rust_bridge = "=2.13.0"
 # Pinned to a commit on voice-core main until 0.1.0 is on crates.io.
-voice-core = { git = "https://github.com/aunai-org/voice-core", rev = "83ce8e9a701d9c4f5576daa017839d4bb4d4ea96" }
+voice-core = { git = "https://github.com/aunai-org/voice-core", rev = "e3a0f6314cb396a48f5d41e2e528f2903bf60f51" }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

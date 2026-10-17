@@ -871,7 +871,7 @@ dependencies = [
 [[package]]
 name = "voice-core"
 version = "0.0.1"
-source = "git+https://github.com/aunai-org/voice-core?rev=83ce8e9a701d9c4f5576daa017839d4bb4d4ea96#83ce8e9a701d9c4f5576daa017839d4bb4d4ea96"
+source = "git+https://github.com/aunai-org/voice-core?rev=e3a0f6314cb396a48f5d41e2e528f2903bf60f51#e3a0f6314cb396a48f5d41e2e528f2903bf60f51"
 dependencies = [
  "audioadapter-buffers",
  "ebur128",
