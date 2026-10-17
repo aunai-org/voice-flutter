@@ -70,4 +70,87 @@ void main() {
       throwsA(isA<VoiceAnalysisException>()),
     );
   });
+
+  test(
+    'the report carries jitter, shimmer and HNR for a steady tone',
+    () async {
+      final r = await VoiceAnalyzer.analyzeSamples(
+        _sine(200, 2, 16000),
+        sampleRate: 16000,
+      );
+      expect(r.jitterLocal, isNotNull);
+      expect(r.shimmerLocal, isNotNull);
+      expect(r.hnrDb, greaterThan(20));
+    },
+  );
+
+  test('silence has no jitter, shimmer or HNR', () async {
+    final r = await VoiceAnalyzer.analyzeSamples(
+      Float32List(32000),
+      sampleRate: 16000,
+    );
+    expect(r.jitterLocal, isNull);
+    expect(r.shimmerLocal, isNull);
+    expect(r.hnrDb, isNull);
+  });
+
+  test('maximum phonation of a held tone, none for silence', () async {
+    final p = await VoiceAnalyzer.maxPhonation(
+      _sine(200, 2, 16000),
+      sampleRate: 16000,
+    );
+    expect(p, isNotNull);
+    expect(p!.durationS, greaterThan(1.5));
+    expect(p.meanF0Hz, closeTo(200, 3));
+    expect(
+      await VoiceAnalyzer.maxPhonation(Float32List(32000), sampleRate: 16000),
+      isNull,
+    );
+  });
+
+  test(
+    'the level ladder gives a step per window, relative to the first',
+    () async {
+      final loud = _sine(200, 1, 16000);
+      final soft = Float32List.fromList([for (final v in loud) v * 0.5]);
+      final steps = await VoiceAnalyzer.levelLadder(
+        Float32List.fromList([...loud, ...soft]),
+        sampleRate: 16000,
+        steps: [(0.0, 1.0), (1.0, 2.0)],
+      );
+      expect(steps, hasLength(2));
+      expect(steps[0].relativeDb, 0.0);
+      expect(steps[1].relativeDb, closeTo(-6, 1));
+    },
+  );
+
+  test('a bad ladder step throws VoiceAnalysisException', () {
+    expect(
+      VoiceAnalyzer.levelLadder(
+        Float32List(1600),
+        sampleRate: 16000,
+        steps: [(1.0, 0.5)],
+      ),
+      throwsA(isA<VoiceAnalysisException>()),
+    );
+  });
+
+  test('window stats come back in the order given', () async {
+    final w = await VoiceAnalyzer.windowStats(
+      _sine(200, 2, 16000),
+      sampleRate: 16000,
+      windows: [(0.5, 1.0), (0.0, 0.5)],
+    );
+    expect(w.map((e) => e.startS), [0.5, 0.0]);
+    expect(w[0].meanF0Hz, closeTo(200, 3));
+  });
+
+  test('a silent gap is a pause hesitation', () async {
+    final tone = _sine(200, 1, 16000);
+    final h = await VoiceAnalyzer.hesitations(
+      Float32List.fromList([...tone, ...Float32List(16000), ...tone]),
+      sampleRate: 16000,
+    );
+    expect(h.any((e) => e.kind == HesitationKind.pause), isTrue);
+  });
 }

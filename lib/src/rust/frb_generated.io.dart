@@ -4,6 +4,7 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api/analysis.dart';
+import 'api/measures.dart';
 import 'api/stream.dart';
 
 import 'dart:async';
@@ -54,6 +55,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double dco_decode_box_autoadd_f_32(dynamic raw);
 
   @protected
+  Phonation dco_decode_box_autoadd_phonation(dynamic raw);
+
+  @protected
   double dco_decode_f_32(dynamic raw);
 
   @protected
@@ -63,10 +67,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FrameInfo dco_decode_frame_info(dynamic raw);
 
   @protected
+  Hesitation dco_decode_hesitation(dynamic raw);
+
+  @protected
+  HesitationKind dco_decode_hesitation_kind(dynamic raw);
+
+  @protected
   int dco_decode_i_32(dynamic raw);
 
   @protected
+  LadderStep dco_decode_ladder_step(dynamic raw);
+
+  @protected
   List<FrameInfo> dco_decode_list_frame_info(dynamic raw);
+
+  @protected
+  List<Hesitation> dco_decode_list_hesitation(dynamic raw);
+
+  @protected
+  List<LadderStep> dco_decode_list_ladder_step(dynamic raw);
 
   @protected
   List<double> dco_decode_list_prim_f_32_loose(dynamic raw);
@@ -78,10 +97,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<(double, double)> dco_decode_list_record_f_64_f_64(dynamic raw);
+
+  @protected
   List<VoiceWarning> dco_decode_list_voice_warning(dynamic raw);
 
   @protected
+  List<WindowStats> dco_decode_list_window_stats(dynamic raw);
+
+  @protected
   double? dco_decode_opt_box_autoadd_f_32(dynamic raw);
+
+  @protected
+  Phonation? dco_decode_opt_box_autoadd_phonation(dynamic raw);
+
+  @protected
+  Phonation dco_decode_phonation(dynamic raw);
+
+  @protected
+  (double, double) dco_decode_record_f_64_f_64(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -100,6 +134,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   VoiceWarning dco_decode_voice_warning(dynamic raw);
+
+  @protected
+  WindowStats dco_decode_window_stats(dynamic raw);
 
   @protected
   StreamAnalyzer
@@ -129,6 +166,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double sse_decode_box_autoadd_f_32(SseDeserializer deserializer);
 
   @protected
+  Phonation sse_decode_box_autoadd_phonation(SseDeserializer deserializer);
+
+  @protected
   double sse_decode_f_32(SseDeserializer deserializer);
 
   @protected
@@ -138,10 +178,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FrameInfo sse_decode_frame_info(SseDeserializer deserializer);
 
   @protected
+  Hesitation sse_decode_hesitation(SseDeserializer deserializer);
+
+  @protected
+  HesitationKind sse_decode_hesitation_kind(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
+  LadderStep sse_decode_ladder_step(SseDeserializer deserializer);
+
+  @protected
   List<FrameInfo> sse_decode_list_frame_info(SseDeserializer deserializer);
+
+  @protected
+  List<Hesitation> sse_decode_list_hesitation(SseDeserializer deserializer);
+
+  @protected
+  List<LadderStep> sse_decode_list_ladder_step(SseDeserializer deserializer);
 
   @protected
   List<double> sse_decode_list_prim_f_32_loose(SseDeserializer deserializer);
@@ -153,12 +208,29 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<(double, double)> sse_decode_list_record_f_64_f_64(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   List<VoiceWarning> sse_decode_list_voice_warning(
     SseDeserializer deserializer,
   );
 
   @protected
+  List<WindowStats> sse_decode_list_window_stats(SseDeserializer deserializer);
+
+  @protected
   double? sse_decode_opt_box_autoadd_f_32(SseDeserializer deserializer);
+
+  @protected
+  Phonation? sse_decode_opt_box_autoadd_phonation(SseDeserializer deserializer);
+
+  @protected
+  Phonation sse_decode_phonation(SseDeserializer deserializer);
+
+  @protected
+  (double, double) sse_decode_record_f_64_f_64(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -177,6 +249,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   VoiceWarning sse_decode_voice_warning(SseDeserializer deserializer);
+
+  @protected
+  WindowStats sse_decode_window_stats(SseDeserializer deserializer);
 
   @protected
   void
@@ -209,6 +284,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_f_32(double self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_phonation(
+    Phonation self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_f_32(double self, SseSerializer serializer);
 
   @protected
@@ -218,11 +299,35 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_frame_info(FrameInfo self, SseSerializer serializer);
 
   @protected
+  void sse_encode_hesitation(Hesitation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_hesitation_kind(
+    HesitationKind self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_ladder_step(LadderStep self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_frame_info(
     List<FrameInfo> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_hesitation(
+    List<Hesitation> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_ladder_step(
+    List<LadderStep> self,
     SseSerializer serializer,
   );
 
@@ -245,13 +350,40 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_record_f_64_f_64(
+    List<(double, double)> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_list_voice_warning(
     List<VoiceWarning> self,
     SseSerializer serializer,
   );
 
   @protected
+  void sse_encode_list_window_stats(
+    List<WindowStats> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_opt_box_autoadd_f_32(double? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_phonation(
+    Phonation? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_phonation(Phonation self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_f_64_f_64(
+    (double, double) self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
@@ -270,6 +402,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_voice_warning(VoiceWarning self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_window_stats(WindowStats self, SseSerializer serializer);
 }
 
 // Section: wire_class

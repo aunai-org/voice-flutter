@@ -40,7 +40,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1763594136;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 870436238;
 
 // Section: executor
 
@@ -220,6 +220,41 @@ fn wire__crate__api__analysis__analyze_samples_impl(
         },
     )
 }
+fn wire__crate__api__measures__hesitations_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "hesitations",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_samples = <Vec<f32>>::sse_decode(&mut deserializer);
+            let api_sample_rate = <u32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok =
+                        crate::api::measures::hesitations(api_samples, api_sample_rate)?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__init_app_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -248,6 +283,121 @@ fn wire__crate__api__init_app_impl(
                     let output_ok = Ok::<_, ()>({
                         crate::api::init_app();
                     })?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__measures__level_ladder_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "level_ladder",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_samples = <Vec<f32>>::sse_decode(&mut deserializer);
+            let api_sample_rate = <u32>::sse_decode(&mut deserializer);
+            let api_steps = <Vec<(f64, f64)>>::sse_decode(&mut deserializer);
+            let api_baseline_dbfs = <Option<f32>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::measures::level_ladder(
+                        api_samples,
+                        api_sample_rate,
+                        api_steps,
+                        api_baseline_dbfs,
+                    )?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__measures__max_phonation_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "max_phonation",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_samples = <Vec<f32>>::sse_decode(&mut deserializer);
+            let api_sample_rate = <u32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok =
+                        crate::api::measures::max_phonation(api_samples, api_sample_rate)?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__measures__window_stats_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "window_stats",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_samples = <Vec<f32>>::sse_decode(&mut deserializer);
+            let api_sample_rate = <u32>::sse_decode(&mut deserializer);
+            let api_windows = <Vec<(f64, f64)>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::measures::window_stats(
+                        api_samples,
+                        api_sample_rate,
+                        api_windows,
+                    )?;
                     std::result::Result::Ok(output_ok)
                 })())
             }
@@ -332,10 +482,54 @@ impl SseDecode for crate::api::stream::FrameInfo {
     }
 }
 
+impl SseDecode for crate::api::measures::Hesitation {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_kind = <crate::api::measures::HesitationKind>::sse_decode(deserializer);
+        let mut var_startS = <f64>::sse_decode(deserializer);
+        let mut var_endS = <f64>::sse_decode(deserializer);
+        return crate::api::measures::Hesitation {
+            kind: var_kind,
+            start_s: var_startS,
+            end_s: var_endS,
+        };
+    }
+}
+
+impl SseDecode for crate::api::measures::HesitationKind {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::measures::HesitationKind::Pause,
+            1 => crate::api::measures::HesitationKind::Held,
+            _ => unreachable!("Invalid variant for HesitationKind: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_i32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for crate::api::measures::LadderStep {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_startS = <f64>::sse_decode(deserializer);
+        let mut var_endS = <f64>::sse_decode(deserializer);
+        let mut var_speechS = <f32>::sse_decode(deserializer);
+        let mut var_levelDbfs = <Option<f32>>::sse_decode(deserializer);
+        let mut var_relativeDb = <Option<f32>>::sse_decode(deserializer);
+        return crate::api::measures::LadderStep {
+            start_s: var_startS,
+            end_s: var_endS,
+            speech_s: var_speechS,
+            level_dbfs: var_levelDbfs,
+            relative_db: var_relativeDb,
+        };
     }
 }
 
@@ -346,6 +540,30 @@ impl SseDecode for Vec<crate::api::stream::FrameInfo> {
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
             ans_.push(<crate::api::stream::FrameInfo>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::measures::Hesitation> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::measures::Hesitation>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::measures::LadderStep> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::measures::LadderStep>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -375,6 +593,18 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<(f64, f64)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<(f64, f64)>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::api::analysis::VoiceWarning> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -382,6 +612,20 @@ impl SseDecode for Vec<crate::api::analysis::VoiceWarning> {
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
             ans_.push(<crate::api::analysis::VoiceWarning>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::measures::WindowStats> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::measures::WindowStats>::sse_decode(
                 deserializer,
             ));
         }
@@ -397,6 +641,44 @@ impl SseDecode for Option<f32> {
         } else {
             return None;
         }
+    }
+}
+
+impl SseDecode for Option<crate::api::measures::Phonation> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::measures::Phonation>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for crate::api::measures::Phonation {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_durationS = <f32>::sse_decode(deserializer);
+        let mut var_startS = <f32>::sse_decode(deserializer);
+        let mut var_meanF0Hz = <f32>::sse_decode(deserializer);
+        let mut var_f0SdSemitones = <f32>::sse_decode(deserializer);
+        let mut var_rmsDbfs = <f32>::sse_decode(deserializer);
+        return crate::api::measures::Phonation {
+            duration_s: var_durationS,
+            start_s: var_startS,
+            mean_f0_hz: var_meanF0Hz,
+            f0_sd_semitones: var_f0SdSemitones,
+            rms_dbfs: var_rmsDbfs,
+        };
+    }
+}
+
+impl SseDecode for (f64, f64) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <f64>::sse_decode(deserializer);
+        let mut var_field1 = <f64>::sse_decode(deserializer);
+        return (var_field0, var_field1);
     }
 }
 
@@ -440,6 +722,9 @@ impl SseDecode for crate::api::analysis::VoiceReport {
         let mut var_pauseCount = <u32>::sse_decode(deserializer);
         let mut var_pauseTotalS = <f32>::sse_decode(deserializer);
         let mut var_longestPauseS = <f32>::sse_decode(deserializer);
+        let mut var_jitterLocal = <Option<f32>>::sse_decode(deserializer);
+        let mut var_shimmerLocal = <Option<f32>>::sse_decode(deserializer);
+        let mut var_hnrDb = <Option<f32>>::sse_decode(deserializer);
         let mut var_warnings = <Vec<crate::api::analysis::VoiceWarning>>::sse_decode(deserializer);
         return crate::api::analysis::VoiceReport {
             duration_s: var_durationS,
@@ -453,6 +738,9 @@ impl SseDecode for crate::api::analysis::VoiceReport {
             pause_count: var_pauseCount,
             pause_total_s: var_pauseTotalS,
             longest_pause_s: var_longestPauseS,
+            jitter_local: var_jitterLocal,
+            shimmer_local: var_shimmerLocal,
+            hnr_db: var_hnrDb,
             warnings: var_warnings,
         };
     }
@@ -466,7 +754,32 @@ impl SseDecode for crate::api::analysis::VoiceWarning {
             0 => crate::api::analysis::VoiceWarning::TooShort,
             1 => crate::api::analysis::VoiceWarning::Clipped,
             2 => crate::api::analysis::VoiceWarning::TooQuiet,
+            3 => crate::api::analysis::VoiceWarning::Noisy,
             _ => unreachable!("Invalid variant for VoiceWarning: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::measures::WindowStats {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_startS = <f64>::sse_decode(deserializer);
+        let mut var_endS = <f64>::sse_decode(deserializer);
+        let mut var_levelDbfs = <Option<f32>>::sse_decode(deserializer);
+        let mut var_relativeLevelDb = <Option<f32>>::sse_decode(deserializer);
+        let mut var_voicedFrames = <u32>::sse_decode(deserializer);
+        let mut var_meanF0Hz = <Option<f32>>::sse_decode(deserializer);
+        let mut var_f0RangeSemitones = <Option<f32>>::sse_decode(deserializer);
+        let mut var_relativePitchSemitones = <Option<f32>>::sse_decode(deserializer);
+        return crate::api::measures::WindowStats {
+            start_s: var_startS,
+            end_s: var_endS,
+            level_dbfs: var_levelDbfs,
+            relative_level_db: var_relativeLevelDb,
+            voiced_frames: var_voicedFrames,
+            mean_f0_hz: var_meanF0Hz,
+            f0_range_semitones: var_f0RangeSemitones,
+            relative_pitch_semitones: var_relativePitchSemitones,
         };
     }
 }
@@ -485,7 +798,11 @@ fn pde_ffi_dispatcher_primary_impl(
         }
         3 => wire__crate__api__stream__StreamAnalyzer_push_impl(port, ptr, rust_vec_len, data_len),
         4 => wire__crate__api__analysis__analyze_samples_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire__crate__api__measures__hesitations_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire__crate__api__init_app_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire__crate__api__measures__level_ladder_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire__crate__api__measures__max_phonation_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire__crate__api__measures__window_stats_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -543,6 +860,97 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::stream::FrameInfo>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::measures::Hesitation {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.kind.into_into_dart().into_dart(),
+            self.start_s.into_into_dart().into_dart(),
+            self.end_s.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::measures::Hesitation
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::measures::Hesitation>
+    for crate::api::measures::Hesitation
+{
+    fn into_into_dart(self) -> crate::api::measures::Hesitation {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::measures::HesitationKind {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Pause => 0.into_dart(),
+            Self::Held => 1.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::measures::HesitationKind
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::measures::HesitationKind>
+    for crate::api::measures::HesitationKind
+{
+    fn into_into_dart(self) -> crate::api::measures::HesitationKind {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::measures::LadderStep {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.start_s.into_into_dart().into_dart(),
+            self.end_s.into_into_dart().into_dart(),
+            self.speech_s.into_into_dart().into_dart(),
+            self.level_dbfs.into_into_dart().into_dart(),
+            self.relative_db.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::measures::LadderStep
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::measures::LadderStep>
+    for crate::api::measures::LadderStep
+{
+    fn into_into_dart(self) -> crate::api::measures::LadderStep {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::measures::Phonation {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.duration_s.into_into_dart().into_dart(),
+            self.start_s.into_into_dart().into_dart(),
+            self.mean_f0_hz.into_into_dart().into_dart(),
+            self.f0_sd_semitones.into_into_dart().into_dart(),
+            self.rms_dbfs.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::measures::Phonation
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::measures::Phonation>
+    for crate::api::measures::Phonation
+{
+    fn into_into_dart(self) -> crate::api::measures::Phonation {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::analysis::VoiceReport {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -557,6 +965,9 @@ impl flutter_rust_bridge::IntoDart for crate::api::analysis::VoiceReport {
             self.pause_count.into_into_dart().into_dart(),
             self.pause_total_s.into_into_dart().into_dart(),
             self.longest_pause_s.into_into_dart().into_dart(),
+            self.jitter_local.into_into_dart().into_dart(),
+            self.shimmer_local.into_into_dart().into_dart(),
+            self.hnr_db.into_into_dart().into_dart(),
             self.warnings.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -580,6 +991,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::analysis::VoiceWarning {
             Self::TooShort => 0.into_dart(),
             Self::Clipped => 1.into_dart(),
             Self::TooQuiet => 2.into_dart(),
+            Self::Noisy => 3.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -592,6 +1004,33 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::analysis::VoiceWarning>
     for crate::api::analysis::VoiceWarning
 {
     fn into_into_dart(self) -> crate::api::analysis::VoiceWarning {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::measures::WindowStats {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.start_s.into_into_dart().into_dart(),
+            self.end_s.into_into_dart().into_dart(),
+            self.level_dbfs.into_into_dart().into_dart(),
+            self.relative_level_db.into_into_dart().into_dart(),
+            self.voiced_frames.into_into_dart().into_dart(),
+            self.mean_f0_hz.into_into_dart().into_dart(),
+            self.f0_range_semitones.into_into_dart().into_dart(),
+            self.relative_pitch_semitones.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::measures::WindowStats
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::measures::WindowStats>
+    for crate::api::measures::WindowStats
+{
+    fn into_into_dart(self) -> crate::api::measures::WindowStats {
         self
     }
 }
@@ -654,10 +1093,46 @@ impl SseEncode for crate::api::stream::FrameInfo {
     }
 }
 
+impl SseEncode for crate::api::measures::Hesitation {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::api::measures::HesitationKind>::sse_encode(self.kind, serializer);
+        <f64>::sse_encode(self.start_s, serializer);
+        <f64>::sse_encode(self.end_s, serializer);
+    }
+}
+
+impl SseEncode for crate::api::measures::HesitationKind {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::measures::HesitationKind::Pause => 0,
+                crate::api::measures::HesitationKind::Held => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for crate::api::measures::LadderStep {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.start_s, serializer);
+        <f64>::sse_encode(self.end_s, serializer);
+        <f32>::sse_encode(self.speech_s, serializer);
+        <Option<f32>>::sse_encode(self.level_dbfs, serializer);
+        <Option<f32>>::sse_encode(self.relative_db, serializer);
     }
 }
 
@@ -667,6 +1142,26 @@ impl SseEncode for Vec<crate::api::stream::FrameInfo> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <crate::api::stream::FrameInfo>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::measures::Hesitation> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::measures::Hesitation>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::measures::LadderStep> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::measures::LadderStep>::sse_encode(item, serializer);
         }
     }
 }
@@ -691,12 +1186,32 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<(f64, f64)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <(f64, f64)>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::api::analysis::VoiceWarning> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <crate::api::analysis::VoiceWarning>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::measures::WindowStats> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::measures::WindowStats>::sse_encode(item, serializer);
         }
     }
 }
@@ -708,6 +1223,35 @@ impl SseEncode for Option<f32> {
         if let Some(value) = self {
             <f32>::sse_encode(value, serializer);
         }
+    }
+}
+
+impl SseEncode for Option<crate::api::measures::Phonation> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::measures::Phonation>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for crate::api::measures::Phonation {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f32>::sse_encode(self.duration_s, serializer);
+        <f32>::sse_encode(self.start_s, serializer);
+        <f32>::sse_encode(self.mean_f0_hz, serializer);
+        <f32>::sse_encode(self.f0_sd_semitones, serializer);
+        <f32>::sse_encode(self.rms_dbfs, serializer);
+    }
+}
+
+impl SseEncode for (f64, f64) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.0, serializer);
+        <f64>::sse_encode(self.1, serializer);
     }
 }
 
@@ -754,6 +1298,9 @@ impl SseEncode for crate::api::analysis::VoiceReport {
         <u32>::sse_encode(self.pause_count, serializer);
         <f32>::sse_encode(self.pause_total_s, serializer);
         <f32>::sse_encode(self.longest_pause_s, serializer);
+        <Option<f32>>::sse_encode(self.jitter_local, serializer);
+        <Option<f32>>::sse_encode(self.shimmer_local, serializer);
+        <Option<f32>>::sse_encode(self.hnr_db, serializer);
         <Vec<crate::api::analysis::VoiceWarning>>::sse_encode(self.warnings, serializer);
     }
 }
@@ -766,12 +1313,27 @@ impl SseEncode for crate::api::analysis::VoiceWarning {
                 crate::api::analysis::VoiceWarning::TooShort => 0,
                 crate::api::analysis::VoiceWarning::Clipped => 1,
                 crate::api::analysis::VoiceWarning::TooQuiet => 2,
+                crate::api::analysis::VoiceWarning::Noisy => 3,
                 _ => {
                     unimplemented!("");
                 }
             },
             serializer,
         );
+    }
+}
+
+impl SseEncode for crate::api::measures::WindowStats {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.start_s, serializer);
+        <f64>::sse_encode(self.end_s, serializer);
+        <Option<f32>>::sse_encode(self.level_dbfs, serializer);
+        <Option<f32>>::sse_encode(self.relative_level_db, serializer);
+        <u32>::sse_encode(self.voiced_frames, serializer);
+        <Option<f32>>::sse_encode(self.mean_f0_hz, serializer);
+        <Option<f32>>::sse_encode(self.f0_range_semitones, serializer);
+        <Option<f32>>::sse_encode(self.relative_pitch_semitones, serializer);
     }
 }
 

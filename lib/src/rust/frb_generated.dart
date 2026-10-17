@@ -4,6 +4,7 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api/analysis.dart';
+import 'api/measures.dart';
 import 'api/stream.dart';
 
 import 'dart:async';
@@ -70,7 +71,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 1763594136;
+  int get rustContentHash => 870436238;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -101,7 +102,30 @@ abstract class RustLibApi extends BaseApi {
     required int sampleRate,
   });
 
+  Future<List<Hesitation>> crateApiMeasuresHesitations({
+    required List<double> samples,
+    required int sampleRate,
+  });
+
   Future<void> crateApiInitApp();
+
+  Future<List<LadderStep>> crateApiMeasuresLevelLadder({
+    required List<double> samples,
+    required int sampleRate,
+    required List<(double, double)> steps,
+    double? baselineDbfs,
+  });
+
+  Future<Phonation?> crateApiMeasuresMaxPhonation({
+    required List<double> samples,
+    required int sampleRate,
+  });
+
+  Future<List<WindowStats>> crateApiMeasuresWindowStats({
+    required List<double> samples,
+    required int sampleRate,
+    required List<(double, double)> windows,
+  });
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_StreamAnalyzer;
@@ -262,6 +286,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<List<Hesitation>> crateApiMeasuresHesitations({
+    required List<double> samples,
+    required int sampleRate,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_32_loose(samples, serializer);
+          sse_encode_u_32(sampleRate, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 5,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_hesitation,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiMeasuresHesitationsConstMeta,
+        argValues: [samples, sampleRate],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiMeasuresHesitationsConstMeta =>
+      const TaskConstMeta(
+        debugName: "hesitations",
+        argNames: ["samples", "sampleRate"],
+      );
+
+  @override
   Future<void> crateApiInitApp() {
     return handler.executeNormal(
       NormalTask(
@@ -270,7 +329,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 6,
             port: port_,
           );
         },
@@ -287,6 +346,117 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiInitAppConstMeta =>
       const TaskConstMeta(debugName: "init_app", argNames: []);
+
+  @override
+  Future<List<LadderStep>> crateApiMeasuresLevelLadder({
+    required List<double> samples,
+    required int sampleRate,
+    required List<(double, double)> steps,
+    double? baselineDbfs,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_32_loose(samples, serializer);
+          sse_encode_u_32(sampleRate, serializer);
+          sse_encode_list_record_f_64_f_64(steps, serializer);
+          sse_encode_opt_box_autoadd_f_32(baselineDbfs, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 7,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_ladder_step,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiMeasuresLevelLadderConstMeta,
+        argValues: [samples, sampleRate, steps, baselineDbfs],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiMeasuresLevelLadderConstMeta =>
+      const TaskConstMeta(
+        debugName: "level_ladder",
+        argNames: ["samples", "sampleRate", "steps", "baselineDbfs"],
+      );
+
+  @override
+  Future<Phonation?> crateApiMeasuresMaxPhonation({
+    required List<double> samples,
+    required int sampleRate,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_32_loose(samples, serializer);
+          sse_encode_u_32(sampleRate, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 8,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_opt_box_autoadd_phonation,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiMeasuresMaxPhonationConstMeta,
+        argValues: [samples, sampleRate],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiMeasuresMaxPhonationConstMeta =>
+      const TaskConstMeta(
+        debugName: "max_phonation",
+        argNames: ["samples", "sampleRate"],
+      );
+
+  @override
+  Future<List<WindowStats>> crateApiMeasuresWindowStats({
+    required List<double> samples,
+    required int sampleRate,
+    required List<(double, double)> windows,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_32_loose(samples, serializer);
+          sse_encode_u_32(sampleRate, serializer);
+          sse_encode_list_record_f_64_f_64(windows, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 9,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_window_stats,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiMeasuresWindowStatsConstMeta,
+        argValues: [samples, sampleRate, windows],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiMeasuresWindowStatsConstMeta =>
+      const TaskConstMeta(
+        debugName: "window_stats",
+        argNames: ["samples", "sampleRate", "windows"],
+      );
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_StreamAnalyzer => wire
@@ -342,6 +512,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Phonation dco_decode_box_autoadd_phonation(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_phonation(raw);
+  }
+
+  @protected
   double dco_decode_f_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as double;
@@ -370,15 +546,61 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Hesitation dco_decode_hesitation(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return Hesitation(
+      kind: dco_decode_hesitation_kind(arr[0]),
+      startS: dco_decode_f_64(arr[1]),
+      endS: dco_decode_f_64(arr[2]),
+    );
+  }
+
+  @protected
+  HesitationKind dco_decode_hesitation_kind(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return HesitationKind.values[raw as int];
+  }
+
+  @protected
   int dco_decode_i_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
   }
 
   @protected
+  LadderStep dco_decode_ladder_step(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return LadderStep(
+      startS: dco_decode_f_64(arr[0]),
+      endS: dco_decode_f_64(arr[1]),
+      speechS: dco_decode_f_32(arr[2]),
+      levelDbfs: dco_decode_opt_box_autoadd_f_32(arr[3]),
+      relativeDb: dco_decode_opt_box_autoadd_f_32(arr[4]),
+    );
+  }
+
+  @protected
   List<FrameInfo> dco_decode_list_frame_info(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_frame_info).toList();
+  }
+
+  @protected
+  List<Hesitation> dco_decode_list_hesitation(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_hesitation).toList();
+  }
+
+  @protected
+  List<LadderStep> dco_decode_list_ladder_step(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_ladder_step).toList();
   }
 
   @protected
@@ -400,15 +622,58 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<(double, double)> dco_decode_list_record_f_64_f_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_record_f_64_f_64).toList();
+  }
+
+  @protected
   List<VoiceWarning> dco_decode_list_voice_warning(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_voice_warning).toList();
   }
 
   @protected
+  List<WindowStats> dco_decode_list_window_stats(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_window_stats).toList();
+  }
+
+  @protected
   double? dco_decode_opt_box_autoadd_f_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_f_32(raw);
+  }
+
+  @protected
+  Phonation? dco_decode_opt_box_autoadd_phonation(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_phonation(raw);
+  }
+
+  @protected
+  Phonation dco_decode_phonation(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return Phonation(
+      durationS: dco_decode_f_32(arr[0]),
+      startS: dco_decode_f_32(arr[1]),
+      meanF0Hz: dco_decode_f_32(arr[2]),
+      f0SdSemitones: dco_decode_f_32(arr[3]),
+      rmsDbfs: dco_decode_f_32(arr[4]),
+    );
+  }
+
+  @protected
+  (double, double) dco_decode_record_f_64_f_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (dco_decode_f_64(arr[0]), dco_decode_f_64(arr[1]));
   }
 
   @protected
@@ -439,8 +704,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   VoiceReport dco_decode_voice_report(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 12)
-      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
+    if (arr.length != 15)
+      throw Exception('unexpected arr length: expect 15 but see ${arr.length}');
     return VoiceReport(
       durationS: dco_decode_f_64(arr[0]),
       sampleRateHz: dco_decode_u_32(arr[1]),
@@ -453,7 +718,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       pauseCount: dco_decode_u_32(arr[8]),
       pauseTotalS: dco_decode_f_32(arr[9]),
       longestPauseS: dco_decode_f_32(arr[10]),
-      warnings: dco_decode_list_voice_warning(arr[11]),
+      jitterLocal: dco_decode_opt_box_autoadd_f_32(arr[11]),
+      shimmerLocal: dco_decode_opt_box_autoadd_f_32(arr[12]),
+      hnrDb: dco_decode_opt_box_autoadd_f_32(arr[13]),
+      warnings: dco_decode_list_voice_warning(arr[14]),
     );
   }
 
@@ -461,6 +729,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   VoiceWarning dco_decode_voice_warning(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return VoiceWarning.values[raw as int];
+  }
+
+  @protected
+  WindowStats dco_decode_window_stats(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return WindowStats(
+      startS: dco_decode_f_64(arr[0]),
+      endS: dco_decode_f_64(arr[1]),
+      levelDbfs: dco_decode_opt_box_autoadd_f_32(arr[2]),
+      relativeLevelDb: dco_decode_opt_box_autoadd_f_32(arr[3]),
+      voicedFrames: dco_decode_u_32(arr[4]),
+      meanF0Hz: dco_decode_opt_box_autoadd_f_32(arr[5]),
+      f0RangeSemitones: dco_decode_opt_box_autoadd_f_32(arr[6]),
+      relativePitchSemitones: dco_decode_opt_box_autoadd_f_32(arr[7]),
+    );
   }
 
   @protected
@@ -519,6 +805,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Phonation sse_decode_box_autoadd_phonation(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_phonation(deserializer));
+  }
+
+  @protected
   double sse_decode_f_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getFloat32();
@@ -550,9 +842,42 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Hesitation sse_decode_hesitation(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_kind = sse_decode_hesitation_kind(deserializer);
+    var var_startS = sse_decode_f_64(deserializer);
+    var var_endS = sse_decode_f_64(deserializer);
+    return Hesitation(kind: var_kind, startS: var_startS, endS: var_endS);
+  }
+
+  @protected
+  HesitationKind sse_decode_hesitation_kind(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return HesitationKind.values[inner];
+  }
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getInt32();
+  }
+
+  @protected
+  LadderStep sse_decode_ladder_step(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_startS = sse_decode_f_64(deserializer);
+    var var_endS = sse_decode_f_64(deserializer);
+    var var_speechS = sse_decode_f_32(deserializer);
+    var var_levelDbfs = sse_decode_opt_box_autoadd_f_32(deserializer);
+    var var_relativeDb = sse_decode_opt_box_autoadd_f_32(deserializer);
+    return LadderStep(
+      startS: var_startS,
+      endS: var_endS,
+      speechS: var_speechS,
+      levelDbfs: var_levelDbfs,
+      relativeDb: var_relativeDb,
+    );
   }
 
   @protected
@@ -563,6 +888,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var ans_ = <FrameInfo>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
       ans_.add(sse_decode_frame_info(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<Hesitation> sse_decode_list_hesitation(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Hesitation>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_hesitation(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<LadderStep> sse_decode_list_ladder_step(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <LadderStep>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_ladder_step(deserializer));
     }
     return ans_;
   }
@@ -589,6 +938,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<(double, double)> sse_decode_list_record_f_64_f_64(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <(double, double)>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_record_f_64_f_64(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<VoiceWarning> sse_decode_list_voice_warning(
     SseDeserializer deserializer,
   ) {
@@ -603,6 +966,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<WindowStats> sse_decode_list_window_stats(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <WindowStats>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_window_stats(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   double? sse_decode_opt_box_autoadd_f_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -611,6 +986,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     } else {
       return null;
     }
+  }
+
+  @protected
+  Phonation? sse_decode_opt_box_autoadd_phonation(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_phonation(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  Phonation sse_decode_phonation(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_durationS = sse_decode_f_32(deserializer);
+    var var_startS = sse_decode_f_32(deserializer);
+    var var_meanF0Hz = sse_decode_f_32(deserializer);
+    var var_f0SdSemitones = sse_decode_f_32(deserializer);
+    var var_rmsDbfs = sse_decode_f_32(deserializer);
+    return Phonation(
+      durationS: var_durationS,
+      startS: var_startS,
+      meanF0Hz: var_meanF0Hz,
+      f0SdSemitones: var_f0SdSemitones,
+      rmsDbfs: var_rmsDbfs,
+    );
+  }
+
+  @protected
+  (double, double) sse_decode_record_f_64_f_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_f_64(deserializer);
+    var var_field1 = sse_decode_f_64(deserializer);
+    return (var_field0, var_field1);
   }
 
   @protected
@@ -650,6 +1063,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_pauseCount = sse_decode_u_32(deserializer);
     var var_pauseTotalS = sse_decode_f_32(deserializer);
     var var_longestPauseS = sse_decode_f_32(deserializer);
+    var var_jitterLocal = sse_decode_opt_box_autoadd_f_32(deserializer);
+    var var_shimmerLocal = sse_decode_opt_box_autoadd_f_32(deserializer);
+    var var_hnrDb = sse_decode_opt_box_autoadd_f_32(deserializer);
     var var_warnings = sse_decode_list_voice_warning(deserializer);
     return VoiceReport(
       durationS: var_durationS,
@@ -663,6 +1079,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       pauseCount: var_pauseCount,
       pauseTotalS: var_pauseTotalS,
       longestPauseS: var_longestPauseS,
+      jitterLocal: var_jitterLocal,
+      shimmerLocal: var_shimmerLocal,
+      hnrDb: var_hnrDb,
       warnings: var_warnings,
     );
   }
@@ -672,6 +1091,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
     return VoiceWarning.values[inner];
+  }
+
+  @protected
+  WindowStats sse_decode_window_stats(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_startS = sse_decode_f_64(deserializer);
+    var var_endS = sse_decode_f_64(deserializer);
+    var var_levelDbfs = sse_decode_opt_box_autoadd_f_32(deserializer);
+    var var_relativeLevelDb = sse_decode_opt_box_autoadd_f_32(deserializer);
+    var var_voicedFrames = sse_decode_u_32(deserializer);
+    var var_meanF0Hz = sse_decode_opt_box_autoadd_f_32(deserializer);
+    var var_f0RangeSemitones = sse_decode_opt_box_autoadd_f_32(deserializer);
+    var var_relativePitchSemitones = sse_decode_opt_box_autoadd_f_32(
+      deserializer,
+    );
+    return WindowStats(
+      startS: var_startS,
+      endS: var_endS,
+      levelDbfs: var_levelDbfs,
+      relativeLevelDb: var_relativeLevelDb,
+      voicedFrames: var_voicedFrames,
+      meanF0Hz: var_meanF0Hz,
+      f0RangeSemitones: var_f0RangeSemitones,
+      relativePitchSemitones: var_relativePitchSemitones,
+    );
   }
 
   @protected
@@ -732,6 +1176,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_phonation(
+    Phonation self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_phonation(self, serializer);
+  }
+
+  @protected
   void sse_encode_f_32(double self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putFloat32(self);
@@ -755,9 +1208,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_hesitation(Hesitation self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_hesitation_kind(self.kind, serializer);
+    sse_encode_f_64(self.startS, serializer);
+    sse_encode_f_64(self.endS, serializer);
+  }
+
+  @protected
+  void sse_encode_hesitation_kind(
+    HesitationKind self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
   void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
+  }
+
+  @protected
+  void sse_encode_ladder_step(LadderStep self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.startS, serializer);
+    sse_encode_f_64(self.endS, serializer);
+    sse_encode_f_32(self.speechS, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.levelDbfs, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.relativeDb, serializer);
   }
 
   @protected
@@ -769,6 +1249,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
       sse_encode_frame_info(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_hesitation(
+    List<Hesitation> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_hesitation(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_ladder_step(
+    List<LadderStep> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_ladder_step(item, serializer);
     }
   }
 
@@ -805,6 +1309,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_record_f_64_f_64(
+    List<(double, double)> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_record_f_64_f_64(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_voice_warning(
     List<VoiceWarning> self,
     SseSerializer serializer,
@@ -817,6 +1333,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_window_stats(
+    List<WindowStats> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_window_stats(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_f_32(double? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -824,6 +1352,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (self != null) {
       sse_encode_box_autoadd_f_32(self, serializer);
     }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_phonation(
+    Phonation? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_phonation(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_phonation(Phonation self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_32(self.durationS, serializer);
+    sse_encode_f_32(self.startS, serializer);
+    sse_encode_f_32(self.meanF0Hz, serializer);
+    sse_encode_f_32(self.f0SdSemitones, serializer);
+    sse_encode_f_32(self.rmsDbfs, serializer);
+  }
+
+  @protected
+  void sse_encode_record_f_64_f_64(
+    (double, double) self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.$1, serializer);
+    sse_encode_f_64(self.$2, serializer);
   }
 
   @protected
@@ -863,6 +1424,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_32(self.pauseCount, serializer);
     sse_encode_f_32(self.pauseTotalS, serializer);
     sse_encode_f_32(self.longestPauseS, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.jitterLocal, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.shimmerLocal, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.hnrDb, serializer);
     sse_encode_list_voice_warning(self.warnings, serializer);
   }
 
@@ -870,6 +1434,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_voice_warning(VoiceWarning self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_window_stats(WindowStats self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.startS, serializer);
+    sse_encode_f_64(self.endS, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.levelDbfs, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.relativeLevelDb, serializer);
+    sse_encode_u_32(self.voicedFrames, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.meanF0Hz, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.f0RangeSemitones, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.relativePitchSemitones, serializer);
   }
 }
 

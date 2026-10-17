@@ -1,4 +1,5 @@
 pub mod analysis;
+pub mod measures;
 pub mod stream;
 
 #[flutter_rust_bridge::frb(init)]
