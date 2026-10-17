@@ -34,6 +34,15 @@ class VoiceReport {
   final int pauseCount;
   final double pauseTotalS;
   final double longestPauseS;
+
+  /// Local jitter as a fraction (0.01 means 1%); null with too little voiced speech.
+  final double? jitterLocal;
+
+  /// Local shimmer as a fraction (0.05 means 5%); null with too little voiced speech.
+  final double? shimmerLocal;
+
+  /// Mean harmonics-to-noise ratio in dB; null with too little voiced speech.
+  final double? hnrDb;
   final List<VoiceWarning> warnings;
 
   const VoiceReport({
@@ -48,6 +57,9 @@ class VoiceReport {
     required this.pauseCount,
     required this.pauseTotalS,
     required this.longestPauseS,
+    this.jitterLocal,
+    this.shimmerLocal,
+    this.hnrDb,
     required this.warnings,
   });
 
@@ -64,6 +76,9 @@ class VoiceReport {
       pauseCount.hashCode ^
       pauseTotalS.hashCode ^
       longestPauseS.hashCode ^
+      jitterLocal.hashCode ^
+      shimmerLocal.hashCode ^
+      hnrDb.hashCode ^
       warnings.hashCode;
 
   @override
@@ -82,8 +97,11 @@ class VoiceReport {
           pauseCount == other.pauseCount &&
           pauseTotalS == other.pauseTotalS &&
           longestPauseS == other.longestPauseS &&
+          jitterLocal == other.jitterLocal &&
+          shimmerLocal == other.shimmerLocal &&
+          hnrDb == other.hnrDb &&
           warnings == other.warnings;
 }
 
 /// Something that makes a recording's measurements less trustworthy.
-enum VoiceWarning { tooShort, clipped, tooQuiet }
+enum VoiceWarning { tooShort, clipped, tooQuiet, noisy }
