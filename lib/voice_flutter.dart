@@ -8,10 +8,13 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart'
     show ExternalLibrary;
 
 import 'src/rust/api/analysis.dart' as bridge;
+import 'src/rust/api/measures.dart' as measures;
 import 'src/rust/api/stream.dart' as live;
 import 'src/rust/frb_generated.dart';
 
 export 'src/rust/api/analysis.dart' show VoiceReport, VoiceWarning;
+export 'src/rust/api/measures.dart'
+    show Hesitation, HesitationKind, LadderStep, Phonation, WindowStats;
 export 'src/rust/api/stream.dart' show FrameInfo, StreamAnalyzer;
 
 export 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart'
@@ -47,6 +50,67 @@ class VoiceAnalyzer {
         samples: samples,
         sampleRate: sampleRate,
       );
+    } on String catch (message) {
+      throw VoiceAnalysisException(message);
+    }
+  }
+
+  /// The longest voiced stretch of mono [samples] (maximum phonation time), or
+  /// null when no stretch has at least 10 voiced frames.
+  static Future<measures.Phonation?> maxPhonation(
+    Float32List samples, {
+    required int sampleRate,
+  }) => _guard(
+    () => measures.maxPhonation(samples: samples, sampleRate: sampleRate),
+  );
+
+  /// Speech level in each of the [steps], given as `(start, end)` windows in
+  /// seconds. The baseline is the first step with speech unless
+  /// [baselineDbfs] is given.
+  static Future<List<measures.LadderStep>> levelLadder(
+    Float32List samples, {
+    required int sampleRate,
+    required List<(double, double)> steps,
+    double? baselineDbfs,
+  }) => _guard(
+    () => measures.levelLadder(
+      samples: samples,
+      sampleRate: sampleRate,
+      steps: steps,
+      baselineDbfs: baselineDbfs,
+    ),
+  );
+
+  /// Level and pitch statistics of each of the [windows], given as
+  /// `(start, end)` in seconds (for example word timestamps), in the order
+  /// given. Pitch disagrees with Praat by an octave on about 1 window in 8, so
+  /// treat it as a guide.
+  static Future<List<measures.WindowStats>> windowStats(
+    Float32List samples, {
+    required int sampleRate,
+    required List<(double, double)> windows,
+  }) => _guard(
+    () => measures.windowStats(
+      samples: samples,
+      sampleRate: sampleRate,
+      windows: windows,
+    ),
+  );
+
+  /// Pauses (0.5 s or longer) and held sounds (a steady voiced stretch of
+  /// 0.4 s or longer) in time order. Pauses match Praat; held sounds are only
+  /// checked on fluent speech so far, so do not present them to people as
+  /// fact yet.
+  static Future<List<measures.Hesitation>> hesitations(
+    Float32List samples, {
+    required int sampleRate,
+  }) => _guard(
+    () => measures.hesitations(samples: samples, sampleRate: sampleRate),
+  );
+
+  static Future<T> _guard<T>(Future<T> Function() call) async {
+    try {
+      return await call();
     } on String catch (message) {
       throw VoiceAnalysisException(message);
     }

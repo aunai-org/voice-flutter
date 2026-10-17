@@ -7,6 +7,7 @@ pub enum VoiceWarning {
     TooShort,
     Clipped,
     TooQuiet,
+    Noisy,
 }
 
 impl From<voice_core::quality::Warning> for VoiceWarning {
@@ -16,6 +17,7 @@ impl From<voice_core::quality::Warning> for VoiceWarning {
             W::TooShort => VoiceWarning::TooShort,
             W::Clipped => VoiceWarning::Clipped,
             W::TooQuiet => VoiceWarning::TooQuiet,
+            W::Noisy => VoiceWarning::Noisy,
         }
     }
 }
@@ -34,6 +36,12 @@ pub struct VoiceReport {
     pub pause_count: u32,
     pub pause_total_s: f32,
     pub longest_pause_s: f32,
+    /// Local jitter as a fraction (0.01 means 1%); null with too little voiced speech.
+    pub jitter_local: Option<f32>,
+    /// Local shimmer as a fraction (0.05 means 5%); null with too little voiced speech.
+    pub shimmer_local: Option<f32>,
+    /// Mean harmonics-to-noise ratio in dB; null with too little voiced speech.
+    pub hnr_db: Option<f32>,
     pub warnings: Vec<VoiceWarning>,
 }
 
@@ -51,6 +59,9 @@ impl From<voice_core::VoiceReport> for VoiceReport {
             pause_count: r.pause_count,
             pause_total_s: r.pause_total_s,
             longest_pause_s: r.longest_pause_s,
+            jitter_local: r.jitter_local,
+            shimmer_local: r.shimmer_local,
+            hnr_db: r.hnr_db,
             warnings: r.warnings.into_iter().map(Into::into).collect(),
         }
     }
