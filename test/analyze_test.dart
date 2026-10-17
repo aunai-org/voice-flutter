@@ -149,11 +149,11 @@ void main() {
     'emphasis returns one entry per word and no range for a short take',
     () async {
       final r = await VoiceAnalyzer.emphasis(
-        _sine(200, 2, 16000),
+        _sine(200, 1, 16000),
         sampleRate: 16000,
-        words: [(0.5, 0.9), (1.0, 1.4)],
+        words: [(0.1, 0.5), (0.5, 0.9)],
       );
-      expect(r.words.map((e) => e.startS), [0.5, 1.0]);
+      expect(r.words.map((e) => e.startS), [0.1, 0.5]);
       expect(r.words[0].pauseAfterS, 0);
       expect(r.typical.levelDb, isNull);
     },
