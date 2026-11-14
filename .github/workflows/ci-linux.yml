@@ -4,9 +4,14 @@ on:
   push:
     branches: [main]
     tags: ['v*']
-  schedule:
-    - cron: '17 21 * * *'
+  # Press Run workflow and tick "latest" to try the newest stable Flutter and
+  # Rust instead of the pinned versions (tells you when a bump is due).
   workflow_dispatch:
+    inputs:
+      latest:
+        description: Use the newest stable Flutter and Rust instead of the pinned ones
+        type: boolean
+        default: false
 
 jobs:
   test:
@@ -14,8 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: ${{ inputs.latest && 'stable' || '1.100.0' }}
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
         with:
@@ -23,6 +29,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: ${{ inputs.latest && '' || '3.47.7' }}
           cache: true
       - run: cargo install flutter_rust_bridge_codegen --version 2.13.0 --locked
       - name: Rust fmt, clippy, test
