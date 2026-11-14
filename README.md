@@ -56,6 +56,6 @@ flutter_rust_bridge_codegen build-web --release -o build/web-pkg
 
 Copy `voice_flutter.js` and `voice_flutter_bg.wasm` from `build/web-pkg/pkg` into the app's `web/pkg/`. The page has to be cross-origin isolated (`Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`) because the Rust side uses a worker pool on shared memory; hosts that cannot set headers can use a service worker such as `coi-serviceworker`. `rust/Cargo.toml` turns `wasm-opt` off so the build needs no download of binaryen.
 
-Versions used: Flutter 3.47.7, Dart 3.13.5, flutter_rust_bridge 2.13.0.
+Versions used: CI pins Flutter 3.47.7 and Rust 1.100.0 (Actions > Run workflow with "latest" ticked tries the newest stable), Dart 3.13.5, flutter_rust_bridge 2.13.0.
 
 License: MIT.
